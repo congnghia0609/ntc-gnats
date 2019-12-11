@@ -6,6 +6,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"runtime"
 	"time"
@@ -23,6 +24,7 @@ func main() {
 
 	// Connect Options.
 	opts := []nats.Option{nats.Name("NATS Sample Subscriber")}
+	opts = append(opts, nats.UserInfo("username", "password"))
 	opts = setupConnOptions(opts)
 
 	// Connect to NATS
@@ -37,6 +39,7 @@ func main() {
 		i += 1
 		printMsg(msg, i)
 	})
+	fmt.Println("=========== Out Subscribe ===========")
 	nc.Flush()
 
 	if err := nc.LastError(); err != nil {
@@ -48,7 +51,9 @@ func main() {
 		log.SetFlags(log.LstdFlags)
 	}
 
+	fmt.Println("=========== Out Subscribe 1 ===========")
 	runtime.Goexit()
+	fmt.Println("=========== Out Subscribe 2 ===========")
 }
 
 func setupConnOptions(opts []nats.Option) []nats.Option {
