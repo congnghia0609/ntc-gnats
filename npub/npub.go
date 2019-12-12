@@ -11,6 +11,7 @@ import (
 	"github.com/congnghia0609/ntc-gconf/nconf"
 	"github.com/nats-io/nats.go"
 	"log"
+	"ntc-gnats/nutil"
 	"strings"
 )
 
@@ -22,7 +23,7 @@ func InitPubConf(name string) error {
 	if name == "" {
 		return errors.New("name config is not empty.")
 	}
-	popts = []nats.Option{nats.Name("NPublisher-")}
+	popts = []nats.Option{nats.Name("NPublisher_" + nutil.GetGUUID())}
 	c := nconf.GetConfig()
 	purl = c.GetString(name+".pub.url")
 	//fmt.Println("purl:", purl)
@@ -42,7 +43,7 @@ func InitPubConf(name string) error {
 // url = nats://127.0.0.1:4222
 // auth = username:password
 func InitPubParams(url string, auth string) error {
-	popts = []nats.Option{nats.Name("NPublisher")}
+	popts = []nats.Option{nats.Name("NPublisher_" + nutil.GetGUUID())}
 	purl = url
 	pauth = auth
 	if len(pauth) > 0 {

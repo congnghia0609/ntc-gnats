@@ -33,12 +33,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	subj, i := "msg.test", 0
-
-	nc.Subscribe(subj, func(msg *nats.Msg) {
-		i += 1
-		printMsg(msg, i)
-	})
+	//subj, i := "msg.test", 0
+	//nc.Subscribe(subj, func(msg *nats.Msg) {
+	//	i += 1
+	//	printMsg(msg, i)
+	//})
+	go doTask(nc)
 	fmt.Println("=========== Out Subscribe ===========")
 	nc.Flush()
 
@@ -46,7 +46,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("Listening on [%s]", subj)
+	//log.Printf("Listening on [%s]", subj)
 	if showTime {
 		log.SetFlags(log.LstdFlags)
 	}
@@ -54,6 +54,15 @@ func main() {
 	fmt.Println("=========== Out Subscribe 1 ===========")
 	runtime.Goexit()
 	fmt.Println("=========== Out Subscribe 2 ===========")
+}
+
+func doTask(nc *nats.Conn) {
+	subj, i := "msg.test", 0
+	nc.Subscribe(subj, func(msg *nats.Msg) {
+		i += 1
+		printMsg(msg, i)
+	})
+	log.Printf("Listening on [%s]", subj)
 }
 
 func setupConnOptions(opts []nats.Option) []nats.Option {

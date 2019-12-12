@@ -20,6 +20,7 @@ func main() {
 	var urls = nats.DefaultURL
 	// Connect Options.
 	opts := []nats.Option{nats.Name("NATS Sample Publisher")}
+	opts = append(opts, nats.UserInfo("username", "password"))
 
 	// Connect to NATS
 	nc, err := nats.Connect(urls, opts...)
