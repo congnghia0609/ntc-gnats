@@ -2,7 +2,6 @@ package nsub
 
 import (
 	"errors"
-	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
 	"github.com/nats-io/nats.go"
 	"github.com/shettyh/threadpool"
@@ -119,9 +118,10 @@ func (pns *PoolNSubscriber) RunPoolNSub() {
 		}
 	}
 	time.Sleep(200 * time.Millisecond)
-	fmt.Println("Running PoolNSubscriber size:", len(pns.listNSub), "NSubscriber")
+	log.Printf("Running PoolNSubscriber size: %d NSubscriber", len(pns.listNSub))
 }
 
+// safe
 func (pns *PoolNSubscriber) DrainPoolNSub() {
 	if len(pns.listNSub) > 0 {
 		numNSub := len(pns.listNSub)
@@ -131,9 +131,10 @@ func (pns *PoolNSubscriber) DrainPoolNSub() {
 		}
 	}
 	time.Sleep(200 * time.Millisecond)
-	fmt.Println("Drain PoolNSubscriber size:", len(pns.listNSub), "NSubscriber")
+	log.Printf("Drain PoolNSubscriber size: %d NSubscriber", len(pns.listNSub))
 }
 
+// unsafe
 func (pns *PoolNSubscriber) UnPoolNSub() {
 	if len(pns.listNSub) > 0 {
 		numNSub := len(pns.listNSub)
@@ -143,7 +144,7 @@ func (pns *PoolNSubscriber) UnPoolNSub() {
 		}
 	}
 	time.Sleep(200 * time.Millisecond)
-	fmt.Println("Unsubscribe PoolNSubscriber size:", len(pns.listNSub), "NSubscriber")
+	log.Printf("Unsubscribe PoolNSubscriber size: %d NSubscriber", len(pns.listNSub))
 }
 
 type NSubscriber struct {
@@ -154,7 +155,7 @@ type NSubscriber struct {
 }
 
 func (ns *NSubscriber) Run() {
-	fmt.Println("Running NSubscriber.ID:", ns.ID)
+	log.Printf("Running NSubscriber.ID: %d", ns.ID)
 	// Connect to NATS
 	var err error
 	ns.Conn, err = nats.Connect(surl, sopts...)
@@ -170,5 +171,5 @@ func (ns *NSubscriber) Run() {
 	}
 	log.Printf("NSubscriber[#%d] is listening on Subject[%s]", ns.ID, ns.Subject)
 	runtime.Goexit()
-	fmt.Println("End NSubscriber.ID:", ns.ID)
+	log.Printf("End NSubscriber.ID: %d", ns.ID)
 }

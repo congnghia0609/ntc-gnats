@@ -26,9 +26,9 @@ func InitPubConf(name string) error {
 	popts = []nats.Option{nats.Name("NPublisher_" + nutil.GetGUUID())}
 	c := nconf.GetConfig()
 	purl = c.GetString(name+".pub.url")
-	//fmt.Println("purl:", purl)
+	//log.Printf("purl: %s", purl)
 	pauth = c.GetString(name+".pub.auth")
-	//fmt.Println("pauth:", pauth)
+	//log.Printf("pauth: %s", pauth)
 	if len(pauth) > 0 {
 		arrauth := strings.Split(pauth, ":")
 		if len(arrauth) == 2 {

@@ -2,7 +2,6 @@ package nworker
 
 import (
 	"errors"
-	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
 	"github.com/nats-io/nats.go"
 	"github.com/shettyh/threadpool"
@@ -120,9 +119,10 @@ func (pnw *PoolNWorker) RunPoolNWorker() {
 		}
 	}
 	time.Sleep(200 * time.Millisecond)
-	fmt.Println("Running PoolNWorker size:", len(pnw.listNWorker), "NWorker")
+	log.Printf("Running PoolNWorker size: %d NWorker", len(pnw.listNWorker))
 }
 
+// safe
 func (pnw *PoolNWorker) DrainPoolNWorker() {
 	if len(pnw.listNWorker) > 0 {
 		numNWorker := len(pnw.listNWorker)
@@ -132,9 +132,10 @@ func (pnw *PoolNWorker) DrainPoolNWorker() {
 		}
 	}
 	time.Sleep(200 * time.Millisecond)
-	fmt.Println("Drain PoolNWorker size:", len(pnw.listNWorker), "NWorker")
+	log.Printf("Drain PoolNWorker size: %d NWorker", len(pnw.listNWorker))
 }
 
+// unsafe
 func (pnw *PoolNWorker) UnPoolNWorker() {
 	if len(pnw.listNWorker) > 0 {
 		numNWorker := len(pnw.listNWorker)
@@ -144,7 +145,7 @@ func (pnw *PoolNWorker) UnPoolNWorker() {
 		}
 	}
 	time.Sleep(200 * time.Millisecond)
-	fmt.Println("Unsubscribe PoolNWorker size:", len(pnw.listNWorker), "NWorker")
+	log.Printf("Unsubscribe PoolNWorker size: %d NWorker", len(pnw.listNWorker))
 }
 
 type NWorker struct {
@@ -156,7 +157,7 @@ type NWorker struct {
 }
 
 func (nw *NWorker) Run() {
-	fmt.Println("Running NWorker.ID:", nw.ID)
+	log.Printf("Running NWorker.ID: %d", nw.ID)
 	// Connect to NATS
 	var err error
 	nw.Conn, err = nats.Connect(wurl, wopts...)
@@ -172,5 +173,5 @@ func (nw *NWorker) Run() {
 	}
 	log.Printf("NWorker[%s][#%d] is listening on Subject[%s]", nw.NameGroup, nw.ID, nw.Subject)
 	runtime.Goexit()
-	fmt.Println("End NWorker.ID:", nw.ID)
+	log.Printf("End NWorker.ID: %d", nw.ID)
 }
