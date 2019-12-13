@@ -15,6 +15,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
+	"strconv"
 )
 
 func GetWDir() string {
@@ -43,7 +44,7 @@ func main() {
 	//// Init PoolNSubscriber
 	//var poolnsub nsub.PoolNSubscriber
 	//for i:=0; i<2; i++ {
-	//	ns := nsub.NSubscriber{int32(i), "msg.test", nil, nil}
+	//	ns := nsub.NSubscriber{strconv.Itoa(i), "msg.test", nil, nil}
 	//	poolnsub.AddNSub(ns)
 	//}
 	//poolnsub.RunPoolNSub()
@@ -53,7 +54,7 @@ func main() {
 	// Init PoolNWorker
 	var poolnworker nworker.PoolNWorker
 	for i:=0; i<2; i++ {
-		nw := nworker.NWorker{int32(i), "worker.email", "worker.email", nil, nil}
+		nw := nworker.NWorker{strconv.Itoa(i), "worker.email", "worker.email", nil, nil}
 		poolnworker.AddNWorker(nw)
 	}
 	poolnworker.RunPoolNWorker()

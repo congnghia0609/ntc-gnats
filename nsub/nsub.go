@@ -148,14 +148,14 @@ func (pns *PoolNSubscriber) UnPoolNSub() {
 }
 
 type NSubscriber struct {
-	ID      int32
+	ID      string
 	Subject string
 	Conn *nats.Conn
 	NSSubt  *nats.Subscription
 }
 
 func (ns *NSubscriber) Run() {
-	log.Printf("Running NSubscriber.ID: %d", ns.ID)
+	log.Printf("Running NSubscriber.ID: %s", ns.ID)
 	// Connect to NATS
 	var err error
 	ns.Conn, err = nats.Connect(surl, sopts...)
@@ -163,13 +163,13 @@ func (ns *NSubscriber) Run() {
 		log.Println(err)
 	}
 	ns.NSSubt, err = ns.Conn.Subscribe(ns.Subject, func(msg *nats.Msg) {
-		log.Printf("NSubscriber[#%d] Received on PubSub [%s]: '%s'", ns.ID, ns.Subject, string(msg.Data))
+		log.Printf("NSubscriber[#%s] Received on PubSub [%s]: '%s'", ns.ID, ns.Subject, string(msg.Data))
 	})
 	ns.Conn.Flush()
 	if err := ns.Conn.LastError(); err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("NSubscriber[#%d] is listening on Subject[%s]", ns.ID, ns.Subject)
+	log.Printf("NSubscriber[#%s] is listening on Subject[%s]", ns.ID, ns.Subject)
 	runtime.Goexit()
-	log.Printf("End NSubscriber.ID: %d", ns.ID)
+	log.Printf("End NSubscriber.ID: %s", ns.ID)
 }

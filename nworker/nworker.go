@@ -149,7 +149,7 @@ func (pnw *PoolNWorker) UnPoolNWorker() {
 }
 
 type NWorker struct {
-	ID        int32
+	ID        string
 	Subject   string
 	NameGroup string
 	Conn *nats.Conn
@@ -157,7 +157,7 @@ type NWorker struct {
 }
 
 func (nw *NWorker) Run() {
-	log.Printf("Running NWorker.ID: %d", nw.ID)
+	log.Printf("Running NWorker.ID: %s", nw.ID)
 	// Connect to NATS
 	var err error
 	nw.Conn, err = nats.Connect(wurl, wopts...)
@@ -165,13 +165,13 @@ func (nw *NWorker) Run() {
 		log.Println(err)
 	}
 	nw.NWSubt, err = nw.Conn.QueueSubscribe(nw.Subject, nw.NameGroup, func(msg *nats.Msg) {
-		log.Printf("NWorker[%s][#%d] Received on QueueWorker[%s]: '%s'", nw.NameGroup, nw.ID, nw.Subject, string(msg.Data))
+		log.Printf("NWorker[%s][#%s] Received on QueueWorker[%s]: '%s'", nw.NameGroup, nw.ID, nw.Subject, string(msg.Data))
 	})
 	nw.Conn.Flush()
 	if err := nw.Conn.LastError(); err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("NWorker[%s][#%d] is listening on Subject[%s]", nw.NameGroup, nw.ID, nw.Subject)
+	log.Printf("NWorker[%s][#%s] is listening on Subject[%s]", nw.NameGroup, nw.ID, nw.Subject)
 	runtime.Goexit()
-	log.Printf("End NWorker.ID: %d", nw.ID)
+	log.Printf("End NWorker.ID: %s", nw.ID)
 }
