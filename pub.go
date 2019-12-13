@@ -29,20 +29,19 @@ func main() {
 	}
 	defer nc.Close()
 
-	// Case 1: PubSub.
-	for i:=0; i<10; i++ {
-		subj, msg := "msg.test", []byte("hello " + strconv.Itoa(i))
-		nc.Publish(subj, msg)
-		log.Printf("Published PubSub [%s] : '%s'\n", subj, msg)
-	}
-
-	//// Case 2: Queue Group.
+	//// Case 1: PubSub.
 	//for i:=0; i<10; i++ {
-	//	subj, msg := "job", []byte("hello " + strconv.Itoa(i))
+	//	subj, msg := "msg.test", []byte("hello " + strconv.Itoa(i))
 	//	nc.Publish(subj, msg)
-	//	log.Printf("Published Queue [%s] : '%s'\n", subj, msg)
+	//	log.Printf("Published PubSub [%s] : '%s'\n", subj, msg)
 	//}
 
+	// Case 2: Queue Group.
+	for i:=0; i<10; i++ {
+		subj, msg := "worker.email", []byte("hello " + strconv.Itoa(i))
+		nc.Publish(subj, msg)
+		log.Printf("Published QueueWorker[%s] : '%s'\n", subj, msg)
+	}
 
 	nc.Flush()
 	if err := nc.LastError(); err != nil {

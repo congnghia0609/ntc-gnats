@@ -24,6 +24,7 @@ func main() {
 
 	// Connect Options.
 	opts := []nats.Option{nats.Name("NATS Sample Queue Subscriber")}
+	opts = append(opts, nats.UserInfo("username", "password"))
 	opts = setupConnOptions1(opts)
 
 	// Connect to NATS

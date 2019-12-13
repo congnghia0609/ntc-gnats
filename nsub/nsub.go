@@ -128,7 +128,7 @@ func (pns *PoolNSubscriber) UnPoolNSub() {
 		pns.poolNS = threadpool.NewThreadPool(numNSub, pns.queueSize)
 		for i:=0; i<numNSub; i++ {
 			ns := &pns.listNSub[i]
-			ns.NSub.Unsubscribe()
+			ns.NSSubt.Unsubscribe()
 		}
 	}
 	time.Sleep(200 * time.Millisecond)
@@ -136,9 +136,9 @@ func (pns *PoolNSubscriber) UnPoolNSub() {
 }
 
 type NSubscriber struct {
-	ID int32
+	ID      int32
 	Subject string
-	NSub *nats.Subscription
+	NSSubt  *nats.Subscription
 }
 
 func (ns *NSubscriber) Run() {
@@ -148,7 +148,7 @@ func (ns *NSubscriber) Run() {
 	if err != nil {
 		log.Println(err)
 	}
-	ns.NSub, err = nc.Subscribe(ns.Subject, func(msg *nats.Msg) {
+	ns.NSSubt, err = nc.Subscribe(ns.Subject, func(msg *nats.Msg) {
 		log.Printf("NSubscriber[#%d] Received on PubSub [%s]: '%s'", ns.ID, ns.Subject, string(msg.Data))
 	})
 	nc.Flush()
