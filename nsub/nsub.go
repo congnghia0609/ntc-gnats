@@ -122,10 +122,21 @@ func (pns *PoolNSubscriber) RunPoolNSub() {
 	fmt.Println("Running PoolNSubscriber size:", len(pns.listNSub), "NSubscriber")
 }
 
+func (pns *PoolNSubscriber) DrainPoolNSub() {
+	if len(pns.listNSub) > 0 {
+		numNSub := len(pns.listNSub)
+		for i:=0; i<numNSub; i++ {
+			ns := &pns.listNSub[i]
+			ns.Conn.Drain()
+		}
+	}
+	time.Sleep(200 * time.Millisecond)
+	fmt.Println("Drain PoolNSubscriber size:", len(pns.listNSub), "NSubscriber")
+}
+
 func (pns *PoolNSubscriber) UnPoolNSub() {
 	if len(pns.listNSub) > 0 {
 		numNSub := len(pns.listNSub)
-		pns.poolNS = threadpool.NewThreadPool(numNSub, pns.queueSize)
 		for i:=0; i<numNSub; i++ {
 			ns := &pns.listNSub[i]
 			ns.NSSubt.Unsubscribe()
@@ -138,21 +149,23 @@ func (pns *PoolNSubscriber) UnPoolNSub() {
 type NSubscriber struct {
 	ID      int32
 	Subject string
+	Conn *nats.Conn
 	NSSubt  *nats.Subscription
 }
 
 func (ns *NSubscriber) Run() {
 	fmt.Println("Running NSubscriber.ID:", ns.ID)
 	// Connect to NATS
-	nc, err := nats.Connect(surl, sopts...)
+	var err error
+	ns.Conn, err = nats.Connect(surl, sopts...)
 	if err != nil {
 		log.Println(err)
 	}
-	ns.NSSubt, err = nc.Subscribe(ns.Subject, func(msg *nats.Msg) {
+	ns.NSSubt, err = ns.Conn.Subscribe(ns.Subject, func(msg *nats.Msg) {
 		log.Printf("NSubscriber[#%d] Received on PubSub [%s]: '%s'", ns.ID, ns.Subject, string(msg.Data))
 	})
-	nc.Flush()
-	if err := nc.LastError(); err != nil {
+	ns.Conn.Flush()
+	if err := ns.Conn.LastError(); err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("NSubscriber[#%d] is listening on Subject[%s]", ns.ID, ns.Subject)

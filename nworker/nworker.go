@@ -123,10 +123,21 @@ func (pnw *PoolNWorker) RunPoolNWorker() {
 	fmt.Println("Running PoolNWorker size:", len(pnw.listNWorker), "NWorker")
 }
 
+func (pnw *PoolNWorker) DrainPoolNWorker() {
+	if len(pnw.listNWorker) > 0 {
+		numNWorker := len(pnw.listNWorker)
+		for i:=0; i<numNWorker; i++ {
+			nw := &pnw.listNWorker[i]
+			nw.Conn.Drain()
+		}
+	}
+	time.Sleep(200 * time.Millisecond)
+	fmt.Println("Drain PoolNWorker size:", len(pnw.listNWorker), "NWorker")
+}
+
 func (pnw *PoolNWorker) UnPoolNWorker() {
 	if len(pnw.listNWorker) > 0 {
 		numNWorker := len(pnw.listNWorker)
-		pnw.poolNW = threadpool.NewThreadPool(numNWorker, pnw.queueSize)
 		for i:=0; i<numNWorker; i++ {
 			nw := &pnw.listNWorker[i]
 			nw.NWSubt.Unsubscribe()
@@ -140,21 +151,23 @@ type NWorker struct {
 	ID        int32
 	Subject   string
 	NameGroup string
+	Conn *nats.Conn
 	NWSubt    *nats.Subscription
 }
 
 func (nw *NWorker) Run() {
 	fmt.Println("Running NWorker.ID:", nw.ID)
 	// Connect to NATS
-	nc, err := nats.Connect(wurl, wopts...)
+	var err error
+	nw.Conn, err = nats.Connect(wurl, wopts...)
 	if err != nil {
 		log.Println(err)
 	}
-	nw.NWSubt, err = nc.QueueSubscribe(nw.Subject, nw.NameGroup, func(msg *nats.Msg) {
+	nw.NWSubt, err = nw.Conn.QueueSubscribe(nw.Subject, nw.NameGroup, func(msg *nats.Msg) {
 		log.Printf("NWorker[%s][#%d] Received on QueueWorker[%s]: '%s'", nw.NameGroup, nw.ID, nw.Subject, string(msg.Data))
 	})
-	nc.Flush()
-	if err := nc.LastError(); err != nil {
+	nw.Conn.Flush()
+	if err := nw.Conn.LastError(); err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("NWorker[%s][#%d] is listening on Subject[%s]", nw.NameGroup, nw.ID, nw.Subject)
