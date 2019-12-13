@@ -13,3 +13,9 @@ email:
   worker:
     url: nats://127.0.0.1:4222
     auth: username:password
+
+db:
+  req:
+    url: nats://127.0.0.1:4222
+    auth: username:password
+    timeout: 10
