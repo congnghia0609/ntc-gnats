@@ -25,6 +25,7 @@ func main() {
 
 	// Connect Options.
 	opts := []nats.Option{nats.Name("NATS Sample Responder")}
+	opts = append(opts, nats.UserInfo("username", "password"))
 	opts = setupConnOptions2(opts)
 
 	// Connect to NATS
@@ -33,13 +34,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	subj, reply, i := "reqres", "this is response", 0
+	subj, reply, i := "reqres", "this is response ==> ", 0
 
 	nc.QueueSubscribe(subj, queueName, func(msg *nats.Msg) {
 		i++
 		printMsg2(msg, i)
-		msg.Respond([]byte(reply))
-		printMsg3(msg, reply, i)
+		msg.Respond([]byte(reply + string(msg.Data)))
+		printMsg3(msg, reply + string(msg.Data), i)
 	})
 	nc.Flush()
 

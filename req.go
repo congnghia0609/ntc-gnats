@@ -22,6 +22,7 @@ func main() {
 
 	// Connect Options.
 	opts := []nats.Option{nats.Name("NATS Sample Requestor")}
+	opts = append(opts, nats.UserInfo("username", "password"))
 
 	// Connect to NATS
 	nc, err := nats.Connect(urls, opts...)
