@@ -33,7 +33,7 @@ func main() {
 	InitNConf2()
 
 	// InitNReq
-	nreq.InitReqConf("db")
+	nreq.InitReqConf("dbreq")
 
 	for i:=0; i<10; i++ {
 		subj, payload := "reqres", "this is request " + strconv.Itoa(i)

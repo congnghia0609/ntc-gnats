@@ -14,13 +14,13 @@ email:
     url: nats://127.0.0.1:4222
     auth: username:password
 
-db:
+dbreq:
   req:
     url: nats://127.0.0.1:4222
     auth: username:password
     timeout: 10
 
-proccess:
+dbres:
   res:
     url: nats://127.0.0.1:4222
     auth: username:password

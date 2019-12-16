@@ -60,11 +60,11 @@ func main() {
 	//poolnworker.RunPoolNWorker()
 
 	// InitNRes
-	nres.InitResConf("proccess")
+	nres.InitResConf("dbres")
 	// Init PoolNRes
 	var poolnres nres.PoolNRes
 	for i:=0; i<2; i++ {
-		nrs := nres.NRes{strconv.Itoa(i), "reqres", "proccess", nil, nil}
+		nrs := nres.NRes{strconv.Itoa(i), "reqres", "dbquery", nil, nil}
 		poolnres.AddNRes(nrs)
 	}
 	poolnres.RunPoolNRes()
