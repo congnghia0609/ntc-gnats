@@ -19,3 +19,9 @@ db:
     url: nats://127.0.0.1:4222
     auth: username:password
     timeout: 10
+
+proccess:
+  res:
+    url: nats://127.0.0.1:4222
+    auth: username:password
+    timeout: 10

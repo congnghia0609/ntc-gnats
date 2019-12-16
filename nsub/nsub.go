@@ -121,7 +121,7 @@ func (pns *PoolNSubscriber) RunPoolNSub() {
 	log.Printf("Running PoolNSubscriber size: %d NSubscriber", len(pns.listNSub))
 }
 
-// safe
+// Disconnect safe
 func (pns *PoolNSubscriber) DrainPoolNSub() {
 	if len(pns.listNSub) > 0 {
 		numNSub := len(pns.listNSub)
@@ -134,7 +134,7 @@ func (pns *PoolNSubscriber) DrainPoolNSub() {
 	log.Printf("Drain PoolNSubscriber size: %d NSubscriber", len(pns.listNSub))
 }
 
-// unsafe
+// Disconnect unsafe
 func (pns *PoolNSubscriber) UnPoolNSub() {
 	if len(pns.listNSub) > 0 {
 		numNSub := len(pns.listNSub)

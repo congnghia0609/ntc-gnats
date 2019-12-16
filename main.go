@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
 	"log"
-	"ntc-gnats/nworker"
+	"ntc-gnats/nres"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -49,15 +49,26 @@ func main() {
 	//}
 	//poolnsub.RunPoolNSub()
 
-	// InitWorker
-	nworker.InitWorkerConf("email")
-	// Init PoolNWorker
-	var poolnworker nworker.PoolNWorker
+	//// InitWorker
+	//nworker.InitWorkerConf("email")
+	//// Init PoolNWorker
+	//var poolnworker nworker.PoolNWorker
+	//for i:=0; i<2; i++ {
+	//	nw := nworker.NWorker{strconv.Itoa(i), "worker.email", "worker.email", nil, nil}
+	//	poolnworker.AddNWorker(nw)
+	//}
+	//poolnworker.RunPoolNWorker()
+
+	// InitNRes
+	nres.InitResConf("proccess")
+	// Init PoolNRes
+	var poolnres nres.PoolNRes
 	for i:=0; i<2; i++ {
-		nw := nworker.NWorker{strconv.Itoa(i), "worker.email", "worker.email", nil, nil}
-		poolnworker.AddNWorker(nw)
+		nrs := nres.NRes{strconv.Itoa(i), "reqres", "proccess", nil, nil}
+		poolnres.AddNRes(nrs)
 	}
-	poolnworker.RunPoolNWorker()
+	poolnres.RunPoolNRes()
+
 
 
 	////// InitPub

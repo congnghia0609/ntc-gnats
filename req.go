@@ -6,17 +6,47 @@
 package main
 
 import (
+	"fmt"
+	"github.com/congnghia0609/ntc-gconf/nconf"
 	"github.com/nats-io/nats.go"
 	"log"
+	"ntc-gnats/nreq"
+	"path/filepath"
+	"runtime"
 	"strconv"
 	"time"
 )
+
+func InitNConf2() {
+	_, b, _, _ := runtime.Caller(0)
+	wdir := filepath.Dir(b)
+	fmt.Println("wdir:", wdir)
+	nconf.Init(wdir)
+}
 
 /**
  * cd ~/go-projects/src/ntc-gnats
  * go run req.go
  */
 func main() {
+	// Init NConf
+	InitNConf2()
+
+	// InitNReq
+	nreq.InitReqConf("db")
+
+	for i:=0; i<10; i++ {
+		subj, payload := "reqres", "this is request " + strconv.Itoa(i)
+		msg, err := nreq.Request(subj, payload)
+		if err != nil {
+			log.Fatalf("%v for request", err)
+		}
+		log.Printf("Published [%s] : '%s'", subj, payload)
+		log.Printf("Received  [%v] : '%s'", msg.Subject, string(msg.Data))
+	}
+}
+
+func test1() {
 	// DefaultURL: nats://127.0.0.1:4222
 	var urls = nats.DefaultURL
 

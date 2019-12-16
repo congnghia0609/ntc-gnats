@@ -122,7 +122,7 @@ func (pnw *PoolNWorker) RunPoolNWorker() {
 	log.Printf("Running PoolNWorker size: %d NWorker", len(pnw.listNWorker))
 }
 
-// safe
+// Disconnect safe
 func (pnw *PoolNWorker) DrainPoolNWorker() {
 	if len(pnw.listNWorker) > 0 {
 		numNWorker := len(pnw.listNWorker)
@@ -135,7 +135,7 @@ func (pnw *PoolNWorker) DrainPoolNWorker() {
 	log.Printf("Drain PoolNWorker size: %d NWorker", len(pnw.listNWorker))
 }
 
-// unsafe
+// Disconnect unsafe
 func (pnw *PoolNWorker) UnPoolNWorker() {
 	if len(pnw.listNWorker) > 0 {
 		numNWorker := len(pnw.listNWorker)
