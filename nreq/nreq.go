@@ -90,17 +90,19 @@ func GetConnect() (*nats.Conn, error) {
 	return nc, err
 }
 
-func Request(subject string, data string) error {
+func Request(subject string, data string) (*nats.Msg, error) {
 	// Connect to NATS
 	nc, err := nats.Connect(rqurl, rqopts...)
 	defer nc.Close()
 	if err != nil {
 		log.Println(err)
 	}
-	nc.Request(subject, []byte(data), rqtimeout)
+	msg, err :=  nc.Request(subject, []byte(data), rqtimeout)
 	nc.Flush()
 	if err := nc.LastError(); err != nil {
 		log.Fatal(err)
 	}
-	return err
+	log.Printf("NReq Published [%s] : '%s'", subject, data)
+	log.Printf("NReq Received  [%v] : '%s'", msg.Subject, string(msg.Data))
+	return msg, err
 }
