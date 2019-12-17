@@ -76,3 +76,6 @@ for i:=0; i<2; i++ {
 }
 poolnres.RunPoolNRes()
 ```
+
+## License
+This code is under the [Apache Licence v2](https://www.apache.org/licenses/LICENSE-2.0).  
