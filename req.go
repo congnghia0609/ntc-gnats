@@ -32,9 +32,8 @@ func main() {
 	// Init NConf
 	InitNConf2()
 
-	// InitNReq
+	//// InitNReq
 	nreq.InitReqConf("dbreq")
-
 	for i:=0; i<10; i++ {
 		subj, payload := "reqres", "this is request " + strconv.Itoa(i)
 		msg, err := nreq.Request(subj, payload)
