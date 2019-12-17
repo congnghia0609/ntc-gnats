@@ -1,3 +1,8 @@
+/**
+ *
+ * @author nghiatc
+ * @since Dec 6, 2019
+ */
 package nutil
 
 import "github.com/google/uuid"

@@ -1,3 +1,8 @@
+/**
+ *
+ * @author nghiatc
+ * @since Dec 17, 2019
+ */
 package nres
 
 import (
