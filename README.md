@@ -24,6 +24,7 @@ for i:=0; i<10; i++ {
 ```
 
 ## Subscriber
+struct NSubscriber and PoolNSubscriber reference file [nsub_template.go](https://github.com/congnghia0609/ntc-gnats/blob/master/nsub/nsub_template.go).  
 ```go
 //// InitSub
 nsub.InitSubConf("chat")
@@ -37,6 +38,7 @@ poolnsub.RunPoolNSub()
 ```
 
 ## Queue Worker
+struct NWorker and PoolNWorker reference file [nworker_template.go](https://github.com/congnghia0609/ntc-gnats/blob/master/nworker/nworker_template.go).  
 ```go
 //// InitWorker
 nworker.InitWorkerConf("email")
@@ -65,6 +67,7 @@ for i:=0; i<10; i++ {
 ```
 
 ## Respond
+struct NRes and PoolNRes reference file [nres_template.go](https://github.com/congnghia0609/ntc-gnats/blob/master/nres/nres_template.go).  
 ```go
 // InitNRes
 nres.InitResConf("dbres")
