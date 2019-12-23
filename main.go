@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
 	"log"
-	"ntc-gnats/nres"
+	"ntc-gnats/nworker"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -30,6 +30,10 @@ func InitNConf() {
 }
 
 /** https://github.com/nats-io/nats.go */
+/**
+ * cd ~/go-projects/src/ntc-gnats
+ * go run main.go
+ */
 func main() {
 	// Init NConf
 	InitNConf()
@@ -39,7 +43,7 @@ func main() {
 	fmt.Println(c.GetString("notify.pub.url"))
 	fmt.Println(c.GetString("notify.pub.auth"))
 
-	////// InitSub
+	//// InitSub
 	//nsub.InitSubConf("chat")
 	//// Init PoolNSubscriber
 	//var poolnsub nsub.PoolNSubscriber
@@ -50,24 +54,24 @@ func main() {
 	//poolnsub.RunPoolNSub()
 
 	//// InitWorker
-	//nworker.InitWorkerConf("email")
-	//// Init PoolNWorker
-	//var poolnworker nworker.PoolNWorker
-	//for i:=0; i<2; i++ {
-	//	nw := nworker.NWorker{strconv.Itoa(i), "worker.email", "worker.email", nil, nil}
-	//	poolnworker.AddNWorker(nw)
-	//}
-	//poolnworker.RunPoolNWorker()
-
-	// InitNRes
-	nres.InitResConf("dbres")
-	// Init PoolNRes
-	var poolnres nres.PoolNRes
+	nworker.InitWorkerConf("email")
+	// Init PoolNWorker
+	var poolnworker nworker.PoolNWorker
 	for i:=0; i<2; i++ {
-		nrs := nres.NRes{strconv.Itoa(i), "reqres", "dbquery", nil, nil}
-		poolnres.AddNRes(nrs)
+		nw := nworker.NWorker{strconv.Itoa(i), "worker.email", "worker.email1", nil, nil}
+		poolnworker.AddNWorker(nw)
 	}
-	poolnres.RunPoolNRes()
+	poolnworker.RunPoolNWorker()
+
+	//// InitNRes
+	//nres.InitResConf("dbres")
+	//// Init PoolNRes
+	//var poolnres nres.PoolNRes
+	//for i:=0; i<2; i++ {
+	//	nrs := nres.NRes{strconv.Itoa(i), "reqres", "dbquery", nil, nil}
+	//	poolnres.AddNRes(nrs)
+	//}
+	//poolnres.RunPoolNRes()
 
 
 

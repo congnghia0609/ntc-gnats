@@ -40,8 +40,8 @@ func main() {
 		if err != nil {
 			log.Fatalf("%v for request", err)
 		}
-		log.Printf("Published [%s] : '%s'", subj, payload)
-		log.Printf("Received  [%v] : '%s'", msg.Subject, string(msg.Data))
+		log.Printf("NReq Published [%s] : '%s'", subj, payload)
+		log.Printf("NReq Received  [%v] : '%s'", msg.Subject, string(msg.Data))
 	}
 }
 

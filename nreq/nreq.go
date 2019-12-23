@@ -107,7 +107,7 @@ func Request(subject string, data string) (*nats.Msg, error) {
 	if err := nc.LastError(); err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("NReq Published [%s] : '%s'", subject, data)
-	log.Printf("NReq Received  [%v] : '%s'", msg.Subject, string(msg.Data))
+	//log.Printf("NReq Published [%s] : '%s'", subject, data)
+	//log.Printf("NReq Received  [%v] : '%s'", msg.Subject, string(msg.Data))
 	return msg, err
 }
