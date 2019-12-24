@@ -45,7 +45,7 @@ func main() {
 	}
 }
 
-func test1() {
+func testReq() {
 	// DefaultURL: nats://127.0.0.1:4222
 	var urls = nats.DefaultURL
 

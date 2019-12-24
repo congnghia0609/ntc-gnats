@@ -81,7 +81,7 @@ func main() {
 	//for i:=0; i<10; i++ {
 	//	subj, msg := "msg.test", "hello " + strconv.Itoa(i)
 	//	npub.Publish(subj, msg)
-	//	log.Printf("Published PubSub [%s] : '%s'\n", subj, msg)
+	//	log.Printf("Published PubSub[%s] : '%s'\n", subj, msg)
 	//}
 
 	//// Case 2: Queue Group.
