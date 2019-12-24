@@ -43,6 +43,7 @@ func InitSubConf(name string) error {
 	sopts = []nats.Option{nats.Name("NSubscriber_" + nutil.GetGUUID())}
 	c := nconf.GetConfig()
 	surl = c.GetString(name+".sub.url")
+	log.Printf("surl=%s", surl)
 	sauth = c.GetString(name+".sub.auth")
 	if len(sauth) > 0 {
 		arrauth := strings.Split(sauth, ":")

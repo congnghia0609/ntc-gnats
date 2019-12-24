@@ -44,6 +44,7 @@ func InitResConf(name string) error {
 	rsopts = []nats.Option{nats.Name("NRes_" + nutil.GetGUUID())}
 	c := nconf.GetConfig()
 	rsurl = c.GetString(name+".res.url")
+	log.Printf("rsurl=%s", rsurl)
 	rsauth = c.GetString(name+".res.auth")
 	if len(rsauth) > 0 {
 		arrauth := strings.Split(rsauth, ":")

@@ -28,7 +28,7 @@ func InitReqConf(name string) error {
 	rqopts = []nats.Option{nats.Name("NReq_" + nutil.GetGUUID())}
 	c := nconf.GetConfig()
 	rqurl = c.GetString(name+".req.url")
-	//log.Printf("rqurl: %s", rqurl)
+	log.Printf("rqurl=%s", rqurl)
 	rqauth = c.GetString(name+".req.auth")
 	//log.Printf("rqauth: %s", rqauth)
 	if len(rqauth) > 0 {
