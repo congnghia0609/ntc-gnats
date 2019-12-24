@@ -44,6 +44,7 @@ func InitWorkerConf(name string) error {
 	wopts = []nats.Option{nats.Name("NWorker_" + nutil.GetGUUID())}
 	c := nconf.GetConfig()
 	wurl = c.GetString(name+".worker.url")
+	log.Printf("wurl=%s", wurl)
 	wauth = c.GetString(name+".worker.auth")
 	if len(wauth) > 0 {
 		arrauth := strings.Split(wauth, ":")

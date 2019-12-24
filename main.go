@@ -75,9 +75,9 @@ func main() {
 
 
 
-	////// InitPub
-	//npub.InitPubConf("notify")
+	////// Publish
 	//// Case 1: PubSub.
+	//npub.InitPubConf("notify")
 	//for i:=0; i<10; i++ {
 	//	subj, msg := "msg.test", "hello " + strconv.Itoa(i)
 	//	npub.Publish(subj, msg)
@@ -85,10 +85,11 @@ func main() {
 	//}
 
 	//// Case 2: Queue Group.
+	//npub.InitPubConf("notify")
 	//for i:=0; i<10; i++ {
-	//	subj, msg := "job", []byte("hello " + strconv.Itoa(i))
-	//	nc.Publish(subj, msg)
-	//	log.Printf("Published Queue [%s] : '%s'\n", subj, msg)
+	//	subj, msg := "worker.email", "hello " + strconv.Itoa(i)
+	//	npub.Publish(subj, msg)
+	//	log.Printf("Published QueueWorker[%s] : '%s'\n", subj, msg)
 	//}
 
 	// uuid
