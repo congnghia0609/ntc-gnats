@@ -6,18 +6,54 @@
 package main
 
 import (
+	"fmt"
+	"github.com/congnghia0609/ntc-gconf/nconf"
 	"github.com/nats-io/nats.go"
 	"log"
+	"ntc-gnats/nres"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"runtime"
+	"strconv"
 	"time"
 )
+
+func InitNConf4() {
+	_, b, _, _ := runtime.Caller(0)
+	wdir := filepath.Dir(b)
+	fmt.Println("wdir:", wdir)
+	nconf.Init(wdir)
+}
 
 /**
  * cd ~/go-projects/src/ntc-gnats
  * go run res.go
  */
 func main() {
+	// Init NConf
+	InitNConf4()
+
+	//// InitNRes
+	nres.InitResConf("dbres")
+	// Init PoolNRes
+	var poolnres nres.PoolNRes
+	for i:=0; i<2; i++ {
+		nrs := nres.NRes{strconv.Itoa(i), "reqres", "dbquery", nil, nil}
+		poolnres.AddNRes(nrs)
+	}
+	poolnres.RunPoolNRes()
+
+	// Hang thread Main.
+	s := make(chan os.Signal, 1)
+	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C) SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
+	signal.Notify(s, os.Interrupt)
+	// Block until we receive our signal.
+	<-s
+	log.Println("################# End Main #################")
+}
+
+func testRes() {
 	// DefaultURL: nats://127.0.0.1:4222
 	var urls = nats.DefaultURL
 	var showTime = true
