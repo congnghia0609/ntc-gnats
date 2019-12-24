@@ -6,18 +6,54 @@
 package main
 
 import (
+	"fmt"
+	"github.com/congnghia0609/ntc-gconf/nconf"
 	"github.com/nats-io/nats.go"
 	"log"
+	"ntc-gnats/nworker"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"runtime"
+	"strconv"
 	"time"
 )
+
+func InitNConf6() {
+	_, b, _, _ := runtime.Caller(0)
+	wdir := filepath.Dir(b)
+	fmt.Println("wdir:", wdir)
+	nconf.Init(wdir)
+}
 
 /**
  * cd ~/go-projects/src/ntc-gnats
  * go run worker.go
  */
 func main() {
+	// Init NConf
+	InitNConf6()
+
+	//// InitWorker
+	nworker.InitWorkerConf("email")
+	// Init PoolNWorker
+	var poolnworker nworker.PoolNWorker
+	for i:=0; i<2; i++ {
+		nw := nworker.NWorker{strconv.Itoa(i), "worker.email", "worker.email1", nil, nil}
+		poolnworker.AddNWorker(nw)
+	}
+	poolnworker.RunPoolNWorker()
+
+	// Hang thread Main.
+	s := make(chan os.Signal, 1)
+	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C) SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
+	signal.Notify(s, os.Interrupt)
+	// Block until we receive our signal.
+	<-s
+	log.Println("################# End Main #################")
+}
+
+func testWorker() {
 	// DefaultURL: nats://127.0.0.1:4222
 	var urls = nats.DefaultURL
 	var showTime = true
