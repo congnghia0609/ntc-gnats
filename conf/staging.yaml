@@ -1,7 +1,7 @@
 
 notify:
   pub:
-    url: nats://127.0.0.1:4222
+    url: nats://127.0.0.1:4222,nats://127.0.0.1:4333,nats://127.0.0.1:4444
     auth: username:password
 
 chat:
@@ -11,7 +11,7 @@ chat:
 
 email:
   worker:
-    url: nats://127.0.0.1:4222
+    url: nats://127.0.0.1:4222,nats://127.0.0.1:4333,nats://127.0.0.1:4444
     auth: username:password
 
 dbreq:
