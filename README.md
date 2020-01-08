@@ -1,17 +1,25 @@
 # ntc-gnats
 ntc-gnats is module [NAST](https://nats.io/) golang client.  
 
-## Install dependencies
+## Install
 ```bash
+go get -u github.com/congnghia0609/ntc-gnats
+```
+
+## Build from source
+```bash
+// Install dependencies
 make deps
-```
 
-## Build
-```bash
+// Build
 make build
+
+// Clean file build
+make clean
 ```
 
-## Publisher
+## Usage
+### Publisher
 ```go
 //// InitPub
 npub.InitPubConf("notify")
@@ -23,7 +31,7 @@ for i:=0; i<10; i++ {
 }
 ```
 
-## Subscriber
+### Subscriber
 struct **NSubscriber** and **PoolNSubscriber** reference file [nsub_template.go](https://github.com/congnghia0609/ntc-gnats/blob/master/nsub/nsub_template.go).  
 ```go
 //// InitSub
@@ -37,7 +45,7 @@ for i:=0; i<2; i++ {
 poolnsub.RunPoolNSub()
 ```
 
-## Queue Worker
+### Queue Worker
 struct **NWorker** and **PoolNWorker** reference file [nworker_template.go](https://github.com/congnghia0609/ntc-gnats/blob/master/nworker/nworker_template.go).  
 ```go
 //// InitWorker
@@ -51,7 +59,7 @@ for i:=0; i<2; i++ {
 poolnworker.RunPoolNWorker()
 ```
 
-## Request
+### Request
 ```go
 //// InitNReq
 nreq.InitReqConf("dbreq")
@@ -66,7 +74,7 @@ for i:=0; i<10; i++ {
 }
 ```
 
-## Respond
+### Respond
 struct **NRes** and **PoolNRes** reference file [nres_template.go](https://github.com/congnghia0609/ntc-gnats/blob/master/nres/nres_template.go).  
 ```go
 // InitNRes
