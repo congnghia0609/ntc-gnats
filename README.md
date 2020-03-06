@@ -1,5 +1,5 @@
 # ntc-gnats
-ntc-gnats is module [NAST](https://nats.io/) golang client.  
+ntc-gnats is module [NATS](https://nats.io/) golang client.  
 
 ## Install
 ```bash
