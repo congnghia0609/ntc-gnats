@@ -10,6 +10,7 @@ import (
 	"github.com/congnghia0609/ntc-gconf/nconf"
 	"github.com/nats-io/nats.go"
 	"log"
+	"math"
 	"ntc-gnats/nutil"
 	"strings"
 	"time"
@@ -20,12 +21,13 @@ var sauth string
 var sopts []nats.Option
 
 func setupConnOptions(opts []nats.Option) []nats.Option {
-	totalWait := 10 * time.Minute
+	//totalWait := 10 * time.Minute
 	reconnectDelay := time.Second
 	opts = append(opts, nats.ReconnectWait(reconnectDelay))
-	opts = append(opts, nats.MaxReconnects(int(totalWait/reconnectDelay)))
+	opts = append(opts, nats.MaxReconnects(math.MaxInt32))
 	opts = append(opts, nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
-		log.Printf("Disconnected due to:%s, will attempt reconnects for %.0fm", err, totalWait.Minutes())
+		//log.Printf("Disconnected due to:%s, will attempt reconnects for %.0fm", err, totalWait.Minutes())
+		log.Printf("Disconnected due to:%s, will attempt reconnects for %v times", err, math.MaxInt32)
 	}))
 	opts = append(opts, nats.ReconnectHandler(func(nc *nats.Conn) {
 		log.Printf("Reconnected [%s]", nc.ConnectedUrl())
