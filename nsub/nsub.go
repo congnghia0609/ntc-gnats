@@ -42,12 +42,12 @@ func setupConnOptions(opts []nats.Option) []nats.Option {
 }
 
 func NewNSubscriber(name string) *NSubscriber {
-	if name == "" {
+	if len(name) == 0 {
 		return nil
 	}
 	c := nconf.GetConfig()
 	id := name + "_NSubscriber_" + nutil.GetGUUID()
-	sopts := []nats.Option{nats.Name(id)}
+	sopts := []nats.Option{nats.Name(id), nats.MaxReconnects(math.MaxInt32)}
 	subject := c.GetString(name + ".sub.subject")
 	surl := c.GetString(name + ".sub.url")
 	log.Printf("surl=%s", surl)

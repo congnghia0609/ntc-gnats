@@ -22,7 +22,7 @@ var mapInstanceNP = map[string]*NPublisher{}
 
 type NPublisher struct {
 	name string
-	url string
+	url  string
 	auth string
 	opts []nats.Option
 	conn *nats.Conn
@@ -49,16 +49,16 @@ func (np *NPublisher) GetConnect() *nats.Conn {
 }
 
 func NewNPublisher(name string) *NPublisher {
-	if name == "" {
+	if len(name) == 0 {
 		fmt.Errorf("name config is not empty.")
 		return nil
 	}
 	c := nconf.GetConfig()
 	id := name + "_NPublisher_" + nutil.GetGUUID()
 	popts := []nats.Option{nats.Name(id), nats.MaxReconnects(math.MaxInt32)}
-	purl := c.GetString(name+".pub.url")
+	purl := c.GetString(name + ".pub.url")
 	fmt.Printf("purl=%s\n", purl)
-	pauth := c.GetString(name+".pub.auth")
+	pauth := c.GetString(name + ".pub.auth")
 	//log.Printf("pauth: %s\n", pauth)
 	if len(pauth) > 0 {
 		arrauth := strings.Split(pauth, ":")
