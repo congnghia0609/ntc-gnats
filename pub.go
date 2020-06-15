@@ -30,8 +30,8 @@ func main() {
 	// Init NConf
 	InitNConf3()
 
-	////// Publish
-	//// Case 1: PubSub.
+	//////// Publish
+	////// Case 1: PubSub.
 	////// Cach 1.1.
 	//name := "notify"
 	//subj := "msg.test"

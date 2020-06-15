@@ -30,11 +30,12 @@ func main() {
 	// Init NConf
 	InitNConf2()
 
-	//// InitNReq
-	////// Cach 1.1.
+	////// Request
+	////// Cach 1.
 	//name := "dbreq"
+	//subj := "reqres"
 	//for i:=0; i<10; i++ {
-	//	subj, payload := "reqres", "this is request " + strconv.Itoa(i)
+	//	payload := "this is request " + strconv.Itoa(i)
 	//	msg, err := nreq.Request(name, subj, payload)
 	//	if err != nil {
 	//		log.Fatalf("%v for request", err)
@@ -43,11 +44,12 @@ func main() {
 	//	log.Printf("NReq Received  [%v] : '%s'", msg.Subject, string(msg.Data))
 	//}
 
-	////// Cach 1.2.
+	//// Cach 2.
 	name := "dbreq"
+	subj := "reqres"
 	nr := nreq.GetInstance(name)
 	for i := 0; i < 10; i++ {
-		subj, payload := "reqres", "this is request "+strconv.Itoa(i)
+		payload := "this is request "+strconv.Itoa(i)
 		msg, err := nr.Request(subj, payload)
 		if err != nil {
 			log.Fatalf("%v for request", err)
