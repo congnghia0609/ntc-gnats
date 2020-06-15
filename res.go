@@ -15,8 +15,6 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
-	"strconv"
-	"time"
 )
 
 func InitNConf4() {
@@ -34,15 +32,10 @@ func main() {
 	// Init NConf
 	InitNConf4()
 
-	//// InitNRes
-	nres.InitResConf("dbres")
-	// Init PoolNRes
-	var poolnres nres.PoolNRes
+	// Start Simple Response
 	for i:=0; i<2; i++ {
-		nrs := nres.NRes{strconv.Itoa(i), "reqres", "dbquery", nil, nil}
-		poolnres.AddNRes(nrs)
+		StartSimpleResponse()
 	}
-	poolnres.RunPoolNRes()
 
 	// Hang thread Main.
 	s := make(chan os.Signal, 1)
@@ -53,75 +46,97 @@ func main() {
 	log.Println("################# End Main #################")
 }
 
-func testRes() {
-	// DefaultURL: nats://127.0.0.1:4222
-	var urls = nats.DefaultURL
-	var showTime = true
-	var queueName = "queue-rr"
-
-	// Connect Options.
-	opts := []nats.Option{nats.Name("NATS Sample Responder")}
-	opts = append(opts, nats.UserInfo("username", "password"))
-	opts = setupConnOptions2(opts)
-
-	// Connect to NATS
-	nc, err := nats.Connect(urls, opts...)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	subj, reply, i := "reqres", "this is response ==> ", 0
-
-	nc.QueueSubscribe(subj, queueName, func(msg *nats.Msg) {
-		i++
-		printMsg2(msg, i)
-		msg.Respond([]byte(reply + string(msg.Data)))
-		printMsg3(msg, reply + string(msg.Data), i)
-	})
-	nc.Flush()
-
-	if err := nc.LastError(); err != nil {
-		log.Fatal(err)
-	}
-
-	log.Printf("Listening on [%s]", subj)
-	if showTime {
-		log.SetFlags(log.LstdFlags)
-	}
-
-	// Setup the interrupt handler to drain so we don't miss
-	// requests when scaling down.
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	<-c
-	log.Println()
-	log.Printf("Draining...")
-	nc.Drain()
-	log.Fatalf("Exiting")
+func StartSimpleResponse() {
+	name := "dbres"
+	nrs := nres.NewNResponse(name)
+	processChan := make(chan *nats.Msg)
+	nrs.Start(processChan)
+	// go-routine process message.
+	go func() {
+		reply := "this is response ==> "
+		for {
+			select {
+			case msg := <-processChan:
+				// Process message in here.
+				log.Printf("NRes[%s][#%s] Received on QueueNRes[%s]: '%s'", nrs.Group, nrs.Name, nrs.Subject, string(msg.Data))
+				datares := reply + string(msg.Data)
+				msg.Respond([]byte(datares))
+				log.Printf("NRes[%s][#%s] Reply on QueueNRes[%s]: '%s'", nrs.Group, nrs.Name, nrs.Subject, datares)
+			}
+		}
+	}()
+	fmt.Printf("SimpleResponse[#%s] start...\n", nrs.Name)
 }
 
-func setupConnOptions2(opts []nats.Option) []nats.Option {
-	totalWait := 10 * time.Minute
-	reconnectDelay := time.Second
-
-	opts = append(opts, nats.ReconnectWait(reconnectDelay))
-	opts = append(opts, nats.MaxReconnects(int(totalWait/reconnectDelay)))
-	opts = append(opts, nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
-		log.Printf("Disconnected due to:%s, will attempt reconnects for %.0fm", err, totalWait.Minutes())
-	}))
-	opts = append(opts, nats.ReconnectHandler(func(nc *nats.Conn) {
-		log.Printf("Reconnected [%s]", nc.ConnectedUrl())
-	}))
-	opts = append(opts, nats.ClosedHandler(func(nc *nats.Conn) {
-		log.Fatalf("Exiting: %v", nc.LastError())
-	}))
-	return opts
-}
-
-func printMsg2(m *nats.Msg, i int) {
-	log.Printf("[#%d] Received on [%s]: '%s'", i, m.Subject, string(m.Data))
-}
-
-func printMsg3(m *nats.Msg, data string, i int) {
-	log.Printf("[#%d] Reply on [%s]: '%s'", i, m.Subject, data)
-}
+//func testRes() {
+//	// DefaultURL: nats://127.0.0.1:4222
+//	var urls = nats.DefaultURL
+//	var showTime = true
+//	var queueName = "queue-rr"
+//
+//	// Connect Options.
+//	opts := []nats.Option{nats.Name("NATS Sample Responder")}
+//	opts = append(opts, nats.UserInfo("username", "password"))
+//	opts = setupConnOptions2(opts)
+//
+//	// Connect to NATS
+//	nc, err := nats.Connect(urls, opts...)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	subj, reply, i := "reqres", "this is response ==> ", 0
+//
+//	nc.QueueSubscribe(subj, queueName, func(msg *nats.Msg) {
+//		i++
+//		printMsg2(msg, i)
+//		msg.Respond([]byte(reply + string(msg.Data)))
+//		printMsg3(msg, reply + string(msg.Data), i)
+//	})
+//	nc.Flush()
+//
+//	if err := nc.LastError(); err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	log.Printf("Listening on [%s]", subj)
+//	if showTime {
+//		log.SetFlags(log.LstdFlags)
+//	}
+//
+//	// Setup the interrupt handler to drain so we don't miss
+//	// requests when scaling down.
+//	c := make(chan os.Signal, 1)
+//	signal.Notify(c, os.Interrupt)
+//	<-c
+//	log.Println()
+//	log.Printf("Draining...")
+//	nc.Drain()
+//	log.Fatalf("Exiting")
+//}
+//
+//func setupConnOptions2(opts []nats.Option) []nats.Option {
+//	totalWait := 10 * time.Minute
+//	reconnectDelay := time.Second
+//
+//	opts = append(opts, nats.ReconnectWait(reconnectDelay))
+//	opts = append(opts, nats.MaxReconnects(int(totalWait/reconnectDelay)))
+//	opts = append(opts, nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
+//		log.Printf("Disconnected due to:%s, will attempt reconnects for %.0fm", err, totalWait.Minutes())
+//	}))
+//	opts = append(opts, nats.ReconnectHandler(func(nc *nats.Conn) {
+//		log.Printf("Reconnected [%s]", nc.ConnectedUrl())
+//	}))
+//	opts = append(opts, nats.ClosedHandler(func(nc *nats.Conn) {
+//		log.Fatalf("Exiting: %v", nc.LastError())
+//	}))
+//	return opts
+//}
+//
+//func printMsg2(m *nats.Msg, i int) {
+//	log.Printf("[#%d] Received on [%s]: '%s'", i, m.Subject, string(m.Data))
+//}
+//
+//func printMsg3(m *nats.Msg, data string, i int) {
+//	log.Printf("[#%d] Reply on [%s]: '%s'", i, m.Subject, data)
+//}

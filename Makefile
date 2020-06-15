@@ -2,6 +2,14 @@ NAME=ntc-gnats
 VERSION=0.0.1
 
 
+.PHONY: req
+req:
+	@go run req.go
+
+.PHONY: res
+res:
+	@go run res.go
+
 .PHONY: sub
 sub:
 	@go run sub.go

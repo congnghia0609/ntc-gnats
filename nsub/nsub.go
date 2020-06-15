@@ -21,7 +21,7 @@ type NSubscriber struct {
 	Auth    string
 	Opts    []nats.Option
 	Conn    *nats.Conn
-	NSSubt  *nats.Subscription
+	Subt  *nats.Subscription
 }
 
 func setupConnOptions(opts []nats.Option) []nats.Option {
@@ -65,14 +65,14 @@ func NewNSubscriber(name string) *NSubscriber {
 	if err != nil {
 		log.Println(err)
 	}
-	return &NSubscriber{Name: id, Subject: subject, Url: surl, Auth: sauth, Opts: sopts, Conn: nc, NSSubt: nil}
+	return &NSubscriber{Name: id, Subject: subject, Url: surl, Auth: sauth, Opts: sopts, Conn: nc, Subt: nil}
 }
 
 func (ns *NSubscriber) Start(processChan chan *nats.Msg) error {
 	log.Printf("Running NSubscriber.Name: %s", ns.Name)
 	// Subscribe to NATS
 	var err error
-	ns.NSSubt, err = ns.Conn.Subscribe(ns.Subject, func(msg *nats.Msg) {
+	ns.Subt, err = ns.Conn.Subscribe(ns.Subject, func(msg *nats.Msg) {
 		//log.Printf("NSubscriber[#%s] Received on PubSub [%s]: '%s'", ns.Name, ns.Subject, string(msg.Data))
 		processChan <- msg
 	})

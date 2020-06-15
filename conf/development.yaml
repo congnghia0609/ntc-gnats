@@ -25,3 +25,5 @@ dbres:
   res:
     url: nats://127.0.0.1:4222
     auth: username:password
+    subject: reqres
+    group: dbquery

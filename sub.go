@@ -57,9 +57,9 @@ func StartSimpleSubscriber() {
 			select {
 			case msg := <-processChan:
 				// Process message in here.
-				log.Printf("ChatNSubscriber[#%s] Received on PubSub [%s]: '%s'", ns.Name, ns.Subject, string(msg.Data))
+				log.Printf("SimpleSubscriber[#%s] Received on PubSub [%s]: '%s'", ns.Name, ns.Subject, string(msg.Data))
 			}
 		}
 	}()
-	fmt.Printf("ChatSubscriber[#%s] start...\n", ns.Name)
+	fmt.Printf("SimpleSubscriber[#%s] start...\n", ns.Name)
 }
