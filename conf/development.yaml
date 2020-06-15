@@ -8,6 +8,7 @@ chat:
   sub:
     url: nats://127.0.0.1:4222
     auth: username:password
+    subject: msg.test
 
 email:
   worker:

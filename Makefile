@@ -1,6 +1,19 @@
 NAME=ntc-gnats
 VERSION=0.0.1
 
+
+.PHONY: sub
+sub:
+	@go run sub.go
+
+.PHONY: pub
+pub:
+	@go run pub.go
+
+.PHONY: main
+main:
+	@go run main.go
+
 .PHONY: build
 build:
 	@echo "Build project..."

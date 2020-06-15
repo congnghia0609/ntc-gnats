@@ -7,28 +7,59 @@
 package npub
 
 import (
-	"errors"
+	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
 	"github.com/nats-io/nats.go"
 	"log"
+	"math"
 	"ntc-gnats/nutil"
 	"strings"
+	"sync"
 )
 
-var purl string
-var pauth string
-var popts []nats.Option
+var mNP sync.Mutex
+var mapInstanceNP = map[string]*NPublisher{}
 
-func InitPubConf(name string) error {
+type NPublisher struct {
+	name string
+	url string
+	auth string
+	opts []nats.Option
+	conn *nats.Conn
+}
+
+func (np *NPublisher) GetName() string {
+	return np.name
+}
+
+func (np *NPublisher) GetUrl() string {
+	return np.url
+}
+
+func (np *NPublisher) GetAuth() string {
+	return np.auth
+}
+
+func (np *NPublisher) GetOption() []nats.Option {
+	return np.opts
+}
+
+func (np *NPublisher) GetConnect() *nats.Conn {
+	return np.conn
+}
+
+func NewNPublisher(name string) *NPublisher {
 	if name == "" {
-		return errors.New("name config is not empty.")
+		fmt.Errorf("name config is not empty.")
+		return nil
 	}
-	popts = []nats.Option{nats.Name("NPublisher_" + nutil.GetGUUID())}
 	c := nconf.GetConfig()
-	purl = c.GetString(name+".pub.url")
-	log.Printf("purl=%s", purl)
-	pauth = c.GetString(name+".pub.auth")
-	//log.Printf("pauth: %s", pauth)
+	id := name + "_NPublisher_" + nutil.GetGUUID()
+	popts := []nats.Option{nats.Name(id), nats.MaxReconnects(math.MaxInt32)}
+	purl := c.GetString(name+".pub.url")
+	fmt.Printf("purl=%s\n", purl)
+	pauth := c.GetString(name+".pub.auth")
+	//log.Printf("pauth: %s\n", pauth)
 	if len(pauth) > 0 {
 		arrauth := strings.Split(pauth, ":")
 		if len(arrauth) == 2 {
@@ -37,58 +68,66 @@ func InitPubConf(name string) error {
 			popts = append(popts, nats.UserInfo(username, password))
 		}
 	}
-	return nil
+	// Connect to NATS
+	nc, err := nats.Connect(purl, popts...)
+	if err != nil {
+		fmt.Printf("Connect to NATS Fail: %v\n", err)
+	}
+	return &NPublisher{name: id, url: purl, auth: pauth, opts: popts, conn: nc}
 }
 
-// url = nats://127.0.0.1:4222
-// auth = username:password
-func InitPubParams(url string, auth string) error {
-	popts = []nats.Option{nats.Name("NPublisher_" + nutil.GetGUUID())}
-	purl = url
-	pauth = auth
-	if len(pauth) > 0 {
-		arrauth := strings.Split(pauth, ":")
-		if len(arrauth) == 2 {
-			username := arrauth[0]
-			password := arrauth[1]
-			popts = append(popts, nats.UserInfo(username, password))
+func GetInstance(name string) *NPublisher {
+	instance := mapInstanceNP[name]
+	if instance == nil || instance.conn.IsClosed() {
+		mNP.Lock()
+		defer mNP.Unlock()
+		instance = mapInstanceNP[name]
+		if instance == nil || instance.conn.IsClosed() {
+			instance = NewNPublisher(name)
+			mapInstanceNP[name] = instance
 		}
 	}
+	return instance
+}
+
+func (np *NPublisher) Publish(subject string, msg string) error {
+	if len(subject) > 0 && len(msg) > 0 {
+		np.conn.Publish(subject, []byte(msg))
+		np.conn.Flush()
+		err := np.conn.LastError()
+		if err != nil {
+			log.Fatalf("NPublisher publish message Error: %v\n", err)
+		}
+		return err
+	}
 	return nil
 }
 
-func GetUrl() string {
-	return purl
-}
-
-func GetAuth() string {
-	return pauth
-}
-
-func GetOption() []nats.Option {
-	return popts
-}
-
-func GetConnect() (*nats.Conn, error) {
-	// Connect to NATS
-	nc, err := nats.Connect(purl, popts...)
-	if err != nil {
-		log.Println(err)
+func (np *NPublisher) PublishByte(subject string, msg []byte) error {
+	if len(subject) > 0 && len(msg) > 0 {
+		np.conn.Publish(subject, msg)
+		np.conn.Flush()
+		err := np.conn.LastError()
+		if err != nil {
+			log.Fatalf("NPublisher publish message Error: %v\n", err)
+		}
+		return err
 	}
-	return nc, err
+	return nil
 }
 
-func Publish(subject string, msg string) error {
-	// Connect to NATS
-	nc, err := nats.Connect(purl, popts...)
-	defer nc.Close()
-	if err != nil {
-		log.Println(err)
+func (np *NPublisher) Close() {
+	if np != nil {
+		np.conn.Close()
 	}
-	nc.Publish(subject, []byte(msg))
-	nc.Flush()
-	if err := nc.LastError(); err != nil {
-		log.Fatal(err)
-	}
-	return err
+}
+
+func Publish(name string, subject string, msg string) error {
+	np := GetInstance(name)
+	return np.Publish(subject, msg)
+}
+
+func PublishByte(name string, subject string, msg []byte) error {
+	np := GetInstance(name)
+	return np.PublishByte(subject, msg)
 }
