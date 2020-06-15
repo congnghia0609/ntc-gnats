@@ -6,7 +6,7 @@ ntc-gnats is a module [NATS](https://nats.io/) golang client.
 go get -u github.com/congnghia0609/ntc-gnats
 ```
 
-## Usage
+## 1. Publish-Subscribe
 ### Publisher
 ```go
 ////// Publish
@@ -52,6 +52,7 @@ func StartSimpleSubscriber() {
 }
 ```
 
+## 2. Queue Groups
 ### Queue Worker  
 ```go
 func StartSimpleWorker() {
@@ -73,6 +74,7 @@ func StartSimpleWorker() {
 }
 ```
 
+## 3. Request-Reply
 ### Request
 ```go
 ////// Request
@@ -104,7 +106,7 @@ for i := 0; i < 10; i++ {
 }
 ```
 
-### Respond  
+### Reply
 ```go
 func StartSimpleResponse() {
 	name := "dbres"
