@@ -21,31 +21,11 @@ var mNP sync.Mutex
 var mapInstanceNP = map[string]*NPublisher{}
 
 type NPublisher struct {
-	name string
-	url  string
-	auth string
-	opts []nats.Option
-	conn *nats.Conn
-}
-
-func (np *NPublisher) GetName() string {
-	return np.name
-}
-
-func (np *NPublisher) GetUrl() string {
-	return np.url
-}
-
-func (np *NPublisher) GetAuth() string {
-	return np.auth
-}
-
-func (np *NPublisher) GetOption() []nats.Option {
-	return np.opts
-}
-
-func (np *NPublisher) GetConnect() *nats.Conn {
-	return np.conn
+	Name string
+	Url  string
+	Auth string
+	Opts []nats.Option
+	Conn *nats.Conn
 }
 
 func NewNPublisher(name string) *NPublisher {
@@ -73,16 +53,16 @@ func NewNPublisher(name string) *NPublisher {
 	if err != nil {
 		fmt.Printf("Connect to NATS Fail: %v\n", err)
 	}
-	return &NPublisher{name: id, url: purl, auth: pauth, opts: popts, conn: nc}
+	return &NPublisher{Name: id, Url: purl, Auth: pauth, Opts: popts, Conn: nc}
 }
 
 func GetInstance(name string) *NPublisher {
 	instance := mapInstanceNP[name]
-	if instance == nil || instance.conn.IsClosed() {
+	if instance == nil || instance.Conn.IsClosed() {
 		mNP.Lock()
 		defer mNP.Unlock()
 		instance = mapInstanceNP[name]
-		if instance == nil || instance.conn.IsClosed() {
+		if instance == nil || instance.Conn.IsClosed() {
 			instance = NewNPublisher(name)
 			mapInstanceNP[name] = instance
 		}
@@ -92,9 +72,9 @@ func GetInstance(name string) *NPublisher {
 
 func (np *NPublisher) Publish(subject string, msg string) error {
 	if len(subject) > 0 && len(msg) > 0 {
-		np.conn.Publish(subject, []byte(msg))
-		np.conn.Flush()
-		err := np.conn.LastError()
+		np.Conn.Publish(subject, []byte(msg))
+		np.Conn.Flush()
+		err := np.Conn.LastError()
 		if err != nil {
 			log.Fatalf("NPublisher publish message Error: %v\n", err)
 		}
@@ -105,9 +85,9 @@ func (np *NPublisher) Publish(subject string, msg string) error {
 
 func (np *NPublisher) PublishByte(subject string, msg []byte) error {
 	if len(subject) > 0 && len(msg) > 0 {
-		np.conn.Publish(subject, msg)
-		np.conn.Flush()
-		err := np.conn.LastError()
+		np.Conn.Publish(subject, msg)
+		np.Conn.Flush()
+		err := np.Conn.LastError()
 		if err != nil {
 			log.Fatalf("NPublisher publish message Error: %v\n", err)
 		}
@@ -118,7 +98,7 @@ func (np *NPublisher) PublishByte(subject string, msg []byte) error {
 
 func (np *NPublisher) Close() {
 	if np != nil {
-		np.conn.Close()
+		np.Conn.Close()
 	}
 }
 

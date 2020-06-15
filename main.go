@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
 	"log"
-	"ntc-gnats/nworker"
+	"ntc-gnats/npub"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -43,60 +43,50 @@ func main() {
 	fmt.Println(c.GetString("notify.pub.url"))
 	fmt.Println(c.GetString("notify.pub.auth"))
 
-	//// InitSub
-	//nsub.InitSubConf("chat")
-	//// Init PoolNSubscriber
-	//var poolnsub nsub.PoolNSubscriber
-	//for i:=0; i<2; i++ {
-	//	ns := nsub.NSubscriber{strconv.Itoa(i), "msg.test", nil, nil}
-	//	poolnsub.AddNSub(ns)
-	//}
-	//poolnsub.RunPoolNSub()
-
-	//// InitWorker
-	nworker.InitWorkerConf("email")
-	// Init PoolNWorker
-	var poolnworker nworker.PoolNWorker
-	for i:=0; i<2; i++ {
-		nw := nworker.NWorker{strconv.Itoa(i), "worker.email", "worker.email1", nil, nil}
-		poolnworker.AddNWorker(nw)
+	//// Start Simple Subscriber
+	for i := 0; i < 2; i++ {
+		StartSimpleSubscriber()
 	}
-	poolnworker.RunPoolNWorker()
 
-	//// InitNRes
-	//nres.InitResConf("dbres")
-	//// Init PoolNRes
-	//var poolnres nres.PoolNRes
-	//for i:=0; i<2; i++ {
-	//	nrs := nres.NRes{strconv.Itoa(i), "reqres", "dbquery", nil, nil}
-	//	poolnres.AddNRes(nrs)
-	//}
-	//poolnres.RunPoolNRes()
+	// Start Simple Worker
+	for i := 0; i < 2; i++ {
+		StartSimpleWorker()
+	}
 
-
+	// Start Simple Response
+	for i := 0; i < 2; i++ {
+		StartSimpleResponse()
+	}
 
 	////// Publish
 	//// Case 1: PubSub.
-	//npub.InitPubConf("notify")
+	////// Cach 1.1.
+	//name := "notify"
+	//subj := "msg.test"
 	//for i:=0; i<10; i++ {
-	//	subj, msg := "msg.test", "hello " + strconv.Itoa(i)
-	//	npub.Publish(subj, msg)
+	//	msg := "hello " + strconv.Itoa(i)
+	//	npub.Publish(name, subj, msg)
+	//	log.Printf("Published PubSub[%s] : '%s'\n", subj, msg)
+	//}
+	////// Cach 1.2.
+	//name := "notify"
+	//subj := "msg.test"
+	//np := npub.GetInstance(name)
+	//for i := 0; i < 10; i++ {
+	//	msg := "hello "+strconv.Itoa(i)
+	//	np.Publish(subj, msg)
 	//	log.Printf("Published PubSub[%s] : '%s'\n", subj, msg)
 	//}
 
 	//// Case 2: Queue Group.
-	//npub.InitPubConf("notify")
-	//for i:=0; i<10; i++ {
-	//	subj, msg := "worker.email", "hello " + strconv.Itoa(i)
-	//	npub.Publish(subj, msg)
-	//	log.Printf("Published QueueWorker[%s] : '%s'\n", subj, msg)
-	//}
-
-	// uuid
-	//for i:=0; i<100; i++ {
-	//	fmt.Println(strconv.Itoa(i), nutil.GetUUID())
-	//}
-
+	name := "notify"
+	subj := "worker.email"
+	np := npub.GetInstance(name)
+	for i := 0; i < 10; i++ {
+		msg := "hello " + strconv.Itoa(i)
+		np.Publish(subj, msg)
+		log.Printf("Published QueueWorker[%s] : '%s'\n", subj, msg)
+	}
 
 	// Hang thread Main.
 	s := make(chan os.Signal, 1)

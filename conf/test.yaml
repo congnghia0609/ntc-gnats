@@ -8,11 +8,14 @@ chat:
   sub:
     url: nats://127.0.0.1:4222
     auth: username:password
+    subject: msg.test
 
 email:
   worker:
     url: nats://127.0.0.1:4222,nats://127.0.0.1:4333,nats://127.0.0.1:4444
     auth: username:password
+    subject: worker.email
+    group: worker.email
 
 dbreq:
   req:
@@ -24,3 +27,5 @@ dbres:
   res:
     url: nats://127.0.0.1:4222
     auth: username:password
+    subject: reqres
+    group: dbquery
