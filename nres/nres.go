@@ -84,7 +84,7 @@ func (nrs *NResponse) Start(processChan chan *nats.Msg) error {
 	if err = nrs.Conn.LastError(); err != nil {
 		log.Fatal(err)
 	}
-	//log.Printf("NRes[%s][#%s] is listening on Subject[%s]", nrs.Group, nrs.Name, nrs.Subject)
+	log.Printf("NResponse[%s][#%s] is listening on Subject[%s]", nrs.Group, nrs.Name, nrs.Subject)
 	//runtime.Goexit()
 	//log.Printf("End NRes.ID: %s", nrs.Name)
 	return err

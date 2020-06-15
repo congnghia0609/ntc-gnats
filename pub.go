@@ -40,19 +40,21 @@ func main() {
 	//	log.Printf("Published PubSub[%s] : '%s'\n", subj, msg)
 	//}
 	////// Cach 1.2.
-	name := "notify"
-	np := npub.GetInstance(name)
-	for i := 0; i < 10; i++ {
-		subj, msg := "msg.test", "hello "+strconv.Itoa(i)
-		np.Publish(subj, msg)
-		log.Printf("Published PubSub[%s] : '%s'\n", subj, msg)
-	}
+	//name := "notify"
+	//np := npub.GetInstance(name)
+	//for i := 0; i < 10; i++ {
+	//	subj, msg := "msg.test", "hello "+strconv.Itoa(i)
+	//	np.Publish(subj, msg)
+	//	log.Printf("Published PubSub[%s] : '%s'\n", subj, msg)
+	//}
 
 	//// Case 2: Queue Group.
-	//npub.InitPubConf("notify")
-	//for i:=0; i<10; i++ {
-	//	subj, msg := "worker.email", "hello " + strconv.Itoa(i)
-	//	npub.Publish(subj, msg)
-	//	log.Printf("Published QueueWorker[%s] : '%s'\n", subj, msg)
-	//}
+	name := "notify"
+	subj := "worker.email"
+	np := npub.GetInstance(name)
+	for i := 0; i < 10; i++ {
+		msg := "hello " + strconv.Itoa(i)
+		np.Publish(subj, msg)
+		log.Printf("Published QueueWorker[%s] : '%s'\n", subj, msg)
+	}
 }

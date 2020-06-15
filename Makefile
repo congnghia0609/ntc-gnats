@@ -18,6 +18,10 @@ sub:
 pub:
 	@go run pub.go
 
+.PHONY: worker
+worker:
+	@go run worker.go
+
 .PHONY: main
 main:
 	@go run main.go
