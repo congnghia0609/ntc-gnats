@@ -5,7 +5,9 @@
 #source /etc/profile
 
 echo "Install library dependencies..."
+
 go get -u github.com/tools/godep
+go get -u github.com/congnghia0609/ntc-gconf
 go get -u github.com/nats-io/nats-server
 go get -u github.com/nats-io/nats.go/
 go get -u github.com/shettyh/threadpool
