@@ -8,9 +8,9 @@ package main
 import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
+	"github.com/congnghia0609/ntc-gnats/nsub"
 	"github.com/nats-io/nats.go"
 	"log"
-	"ntc-gnats/nsub"
 	"os"
 	"os/signal"
 	"path/filepath"

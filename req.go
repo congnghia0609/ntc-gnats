@@ -8,8 +8,8 @@ package main
 import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
+	"github.com/congnghia0609/ntc-gnats/nreq"
 	"log"
-	"ntc-gnats/nreq"
 	"path/filepath"
 	"runtime"
 	"strconv"
@@ -49,7 +49,7 @@ func main() {
 	subj := "reqres"
 	nr := nreq.GetInstance(name)
 	for i := 0; i < 10; i++ {
-		payload := "this is request "+strconv.Itoa(i)
+		payload := "this is request " + strconv.Itoa(i)
 		msg, err := nr.Request(subj, payload)
 		if err != nil {
 			log.Fatalf("%v for request", err)

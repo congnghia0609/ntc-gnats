@@ -8,10 +8,10 @@ package nreq
 import (
 	"errors"
 	"github.com/congnghia0609/ntc-gconf/nconf"
+	"github.com/congnghia0609/ntc-gnats/nutil"
 	"github.com/nats-io/nats.go"
 	"log"
 	"math"
-	"ntc-gnats/nutil"
 	"strings"
 	"sync"
 	"time"

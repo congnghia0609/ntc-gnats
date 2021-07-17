@@ -8,8 +8,8 @@ package main
 import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
+	"github.com/congnghia0609/ntc-gnats/npub"
 	"log"
-	"ntc-gnats/npub"
 	"path/filepath"
 	"runtime"
 	"strconv"

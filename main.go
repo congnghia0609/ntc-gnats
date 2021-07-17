@@ -9,9 +9,9 @@ package main
 import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
+	"github.com/congnghia0609/ntc-gnats/npub"
+	"github.com/congnghia0609/ntc-gnats/nreq"
 	"log"
-	"ntc-gnats/npub"
-	"ntc-gnats/nreq"
 	"os"
 	"os/signal"
 	"path/filepath"

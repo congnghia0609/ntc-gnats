@@ -8,9 +8,9 @@ package main
 import (
 	"fmt"
 	"github.com/congnghia0609/ntc-gconf/nconf"
+	"github.com/congnghia0609/ntc-gnats/nworker"
 	"github.com/nats-io/nats.go"
 	"log"
-	"ntc-gnats/nworker"
 	"os"
 	"os/signal"
 	"path/filepath"
